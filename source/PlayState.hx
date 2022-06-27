@@ -134,7 +134,9 @@ class PlayState extends MusicBeatState
 
 	var talking:Bool = true;
 	var songScore:Int = 0;
+	var misses:Int = 0;
 	var scoreTxt:FlxText;
+	var missTxt:FlxText;
 
 	public static var campaignScore:Int = 0;
 
@@ -883,6 +885,10 @@ class PlayState extends MusicBeatState
 		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
+		missTxt = new FlxText(healthBarBG.x + healthBarBG.width, healthBarBG.y + 30, 0, "", 20);
+		missTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
+		missTxt.scrollFactor.set();
+		add(missTxt);
 
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -900,6 +906,7 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
+		missTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
@@ -1655,6 +1662,7 @@ class PlayState extends MusicBeatState
 		super.update(elapsed);
 
 		scoreTxt.text = "Score:" + songScore;
+		missTxt.text = "Misses:" + misses; // TODO: Fix this???
 
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
@@ -2340,13 +2348,6 @@ class PlayState extends MusicBeatState
 			}
 			else if (possibleNotes.length > 0)
 			{
-				for (i in 0...controlArray.length)
-				{
-					if (controlArray[i] && !ignoreList.contains(i))
-					{
-						badNoteHit();
-					}
-				}
 				for (possibleNote in possibleNotes)
 				{
 					if (controlArray[possibleNote.noteData])
@@ -2355,8 +2356,6 @@ class PlayState extends MusicBeatState
 					}
 				}
 			}
-			else
-				badNoteHit();
 		}
 		if (boyfriend.holdTimer > 0.004 * Conductor.stepCrochet && !holdingArray.contains(true) && boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
 		{
@@ -2390,11 +2389,11 @@ class PlayState extends MusicBeatState
 				gf.playAnim('sad');
 			}
 			combo = 0;
-
 			if (!practiceMode)
 				songScore -= 10;
 
 			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+			misses++;
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
 			// FlxG.log.add('played imss note');
 
@@ -2418,25 +2417,6 @@ class PlayState extends MusicBeatState
 					boyfriend.playAnim('singRIGHTmiss', true);
 			}
 		}
-	}
-
-	function badNoteHit()
-	{
-		// just double pasting this shit cuz fuk u
-		// REDO THIS SYSTEM!
-		var leftP = controls.NOTE_LEFT_P;
-		var downP = controls.NOTE_DOWN_P;
-		var upP = controls.NOTE_UP_P;
-		var rightP = controls.NOTE_RIGHT_P;
-
-		if (leftP)
-			noteMiss(0);
-		if (downP)
-			noteMiss(1);
-		if (upP)
-			noteMiss(2);
-		if (rightP)
-			noteMiss(3);
 	}
 
 	function goodNoteHit(note:Note):Void

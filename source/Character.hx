@@ -469,6 +469,36 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 				flipX = true;
+			case 'box':
+				tex = Paths.getSparrowAtlas('characters/box');
+				frames = tex;
+				quickAnimAdd('idle', "Box Idle Dance");
+				quickAnimAdd('singUP', 'Box Up note0');
+				quickAnimAdd('singDOWN', 'Box Down Note0');
+				if (isPlayer)
+				{
+					quickAnimAdd('singLEFT', 'Box NOTE LEFT0');
+					quickAnimAdd('singRIGHT', 'Box Note Right0');
+					quickAnimAdd('singRIGHTmiss', 'Box Note Right Miss');
+					quickAnimAdd('singLEFTmiss', 'Box NOTE LEFT miss');
+				}
+				else
+				{
+					// Need to be flipped! REDO THIS LATER!
+					quickAnimAdd('singLEFT', 'Box Note Right0');
+					quickAnimAdd('singRIGHT', 'Box NOTE LEFT0');
+					quickAnimAdd('singRIGHTmiss', 'Box NOTE LEFT miss');
+					quickAnimAdd('singLEFTmiss', 'Box Note Right Miss');
+				}
+
+				quickAnimAdd('singUPmiss', 'Box Up note miss');
+				quickAnimAdd('singDOWNmiss', 'Box Down Note MISS');
+
+				loadOffsetFile(curCharacter);
+
+				playAnim('idle');
+
+				flipX = true;
 		}
 
 		dance();

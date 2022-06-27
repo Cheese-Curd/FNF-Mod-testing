@@ -55,12 +55,13 @@ class MainMenuState extends MusicBeatState
 
 		persistentUpdate = persistentDraw = true;
 
-		var bg:FlxSprite = new FlxSprite(null, null, Paths.image('menuBG'));
+		var bg:FlxSprite = new FlxSprite(null, null, Paths.image('menuDesat'));
 		bg.scrollFactor.x = 0;
 		bg.scrollFactor.y = 0.17;
 		bg.setGraphicSize(Std.int(bg.width * 1.2));
 		bg.updateHitbox();
 		bg.screenCenter();
+		bg.color = 0xFF57007F;
 		bg.antialiasing = true;
 		add(bg);
 
@@ -76,7 +77,7 @@ class MainMenuState extends MusicBeatState
 		magenta.y = bg.y;
 		magenta.visible = false;
 		magenta.antialiasing = true;
-		magenta.color = 0xFFFD719B;
+		magenta.color = 0xFF8400C1;
 		if (PreferencesMenu.preferences.get('flashing-menu'))
 		{
 			add(magenta);
@@ -99,6 +100,10 @@ class MainMenuState extends MusicBeatState
 		{
 			startExitState(new FreeplayState());
 		});
+		menuItems.createItem(0, 0, "options", function()
+		{
+			startExitState(new OptionsState());
+		});
 		if (VideoState.seenVideo)
 		{
 			menuItems.createItem(null, null, "kickstarter", selectDonate, true);
@@ -107,10 +112,6 @@ class MainMenuState extends MusicBeatState
 		{
 			menuItems.createItem(null, null, "donate", selectDonate, true);
 		}
-		menuItems.createItem(0, 0, "options", function()
-		{
-			startExitState(new OptionsState());
-		});
 
 		var pos:Float = (FlxG.height - 160 * (menuItems.length - 1)) / 2;
 		for (i in 0...menuItems.length)
@@ -122,12 +123,13 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, null, 0.06);
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "v" + Application.current.meta.get('version'), 12);
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "Funkin Version: " + Application.current.meta.get('version'), 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 		#if ng
-		versionShit.text += "(Newgrounds exclusive preview)";
+		final funkyText:Array<String> = "Not M.I.L.F again...;Still in Development;Cheesy!;Based off the Newgrounds Port!;NOT Psych Engine;R.I.P Kade Engine;Never forget tankdude".split(';');
+		versionShit.text += ' [${funkyText[FlxG.random.int(0, funkyText.length-1)]}]';
 		#end
 
 		super.create();
@@ -147,9 +149,9 @@ class MainMenuState extends MusicBeatState
 	function selectDonate()
 	{
 		#if linux
-		Sys.command('/usr/bin/xdg-open', ["https://www.kickstarter.com/projects/funkin/friday-night-funkin-the-full-ass-game/", "&"]);
+		Sys.command('/usr/bin/xdg-open', ["https://www.google.com/search?q=what+song+was+released+on+July+27%2C+1987", "&"]);
 		#else
-		FlxG.openURL('https://www.kickstarter.com/projects/funkin/friday-night-funkin-the-full-ass-game/');
+		FlxG.openURL('https://www.google.com/search?q=what+song+was+released+on+July+27%2C+1987');
 		#end
 	}
 
