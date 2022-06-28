@@ -69,8 +69,16 @@ class PreferencesMenu extends Page
 	{
 		if (preferences.get(identifier) == null)
 		{
-			preferences.set(identifier, defaultValue);
-			trace('set preference!');
+			if (Reflect.hasField(FlxG.save.data, 'pref-$identifier'))
+			{
+				preferences.set(identifier, Reflect.field(FlxG.save.data, 'pref-$identifier'));
+				trace('set preference from save!');
+			}
+			else
+			{
+				preferences.set(identifier, defaultValue);
+				trace('initted preference!');
+			}
 		}
 		else
 		{
@@ -127,6 +135,8 @@ class PreferencesMenu extends Page
 				else
 					Lib.current.stage.removeChild(Main.fpsCounter);
 		}
+		Reflect.setField(FlxG.save.data, 'pref-$identifier', value);
+		FlxG.save.flush();
 	}
 
 	override function update(elapsed:Float)

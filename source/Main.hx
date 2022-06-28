@@ -73,7 +73,7 @@ class Main extends Sprite
 
 		#if !mobile
 		fpsCounter = new FPS(10, 3, 0xFFFFFF);
-		addChild(fpsCounter);
+		Lib.current.stage.addChild(fpsCounter);
 		#end
 	}
 }

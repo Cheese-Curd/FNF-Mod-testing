@@ -78,7 +78,7 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		// FlxG.save.bind('funkin', 'ninjamuffin99'); // saves to a different location, fucks up volume saving
 
 		PreferencesMenu.initPrefs();
 		PlayerSettings.init();
@@ -187,7 +187,7 @@ class TitleState extends MusicBeatState
 			FlxG.sound.music.fadeIn(4, 0, 0.7);
 		}
 
-		Conductor.changeBPM(102);
+		Conductor.changeBPM(116.5); // fresh chill mix is around this bpm -Angel
 		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);

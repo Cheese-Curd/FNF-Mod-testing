@@ -100,18 +100,18 @@ class MainMenuState extends MusicBeatState
 		{
 			startExitState(new FreeplayState());
 		});
-		menuItems.createItem(0, 0, "options", function()
+		menuItems.createItem(0, 320, "options", function()
 		{
 			startExitState(new OptionsState());
 		});
-		if (VideoState.seenVideo)
-		{
-			menuItems.createItem(null, null, "kickstarter", selectDonate, true);
-		}
-		else
-		{
-			menuItems.createItem(null, null, "donate", selectDonate, true);
-		}
+		// if (VideoState.seenVideo)
+		// {
+		// 	menuItems.createItem(200, -100, "kickstarter", selectDonate, true);
+		// }
+		// else
+		// {
+		// 	menuItems.createItem(200, -100, "donate", selectDonate, true);
+		// }
 
 		var pos:Float = (FlxG.height - 160 * (menuItems.length - 1)) / 2;
 		for (i in 0...menuItems.length)
@@ -127,10 +127,9 @@ class MainMenuState extends MusicBeatState
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
-		#if ng
-		final funkyText:Array<String> = "Not M.I.L.F again...;Still in Development;Cheesy!;Based off the Newgrounds Port!;NOT Psych Engine;R.I.P Kade Engine;Never forget tankdude".split(';');
+
+		final funkyText:Array<String> = "Not M.I.L.F again...;Still in Development;Cheesy!;Based off the Newgrounds Port!;NOT Psych Engine;R.I.P Kade Engine;Never forget tankdude;Also play TF2!;Vowortuwux Powolygowonowol UwU".split(';');
 		versionShit.text += ' [${funkyText[FlxG.random.int(0, funkyText.length-1)]}]';
-		#end
 
 		super.create();
 	}

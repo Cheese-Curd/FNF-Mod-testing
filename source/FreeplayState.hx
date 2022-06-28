@@ -213,7 +213,7 @@ class FreeplayState extends MusicBeatState
 			changeSelection(1);
 		}
 		if (FlxG.mouse.wheel != 0)
-			changeSelection(-Math.round(FlxG.mouse.wheel / 4));
+			changeSelection(-FlxG.mouse.wheel);
 
 		if (controls.UI_LEFT_P)
 			changeDiff(-1);

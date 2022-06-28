@@ -123,7 +123,7 @@ class PlayState extends MusicBeatState
 	var santa:FlxSprite;
 
 	var bgGirls:BackgroundGirls;
-	var wiggleShit:WiggleEffect = new WiggleEffect();
+	// var wiggleShit:WiggleEffect = new WiggleEffect();
 
 	var tankWatchtower:BGSprite;
 	var tankGround:BGSprite;
@@ -136,6 +136,7 @@ class PlayState extends MusicBeatState
 	var songScore:Int = 0;
 	var misses:Int = 0;
 	var scoreTxt:FlxText;
+	var songTxt:FlxText;
 	var missTxt:FlxText;
 
 	public static var campaignScore:Int = 0;
@@ -881,14 +882,18 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
-		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
+		scoreTxt = new FlxText(-healthBarBG.x + healthBarBG.width + 80, healthBarBG.y + 30, 0, "", 20);
 		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
-		missTxt = new FlxText(healthBarBG.x + healthBarBG.width, healthBarBG.y + 30, 0, "", 20);
+		missTxt = new FlxText(healthBarBG.x + healthBarBG.width - 80, healthBarBG.y + 30, 0, "", 20);
 		missTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 		missTxt.scrollFactor.set();
 		add(missTxt);
+		songTxt = new FlxText(healthBarBG.x + healthBarBG.width - 80, healthBarBG.y + 30, 0, "", 20);
+		songTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
+		songTxt.scrollFactor.set();
+		add(songTxt);
 
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -907,6 +912,7 @@ class PlayState extends MusicBeatState
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
 		missTxt.cameras = [camHUD];
+		songTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
@@ -1398,9 +1404,9 @@ class PlayState extends MusicBeatState
 			babyArrow.shader = colorSwap.shader;
 			colorSwap.update(Note.arrowColors[i]);
 
-			switch (curStage)
+			switch (dad)
 			{
-				case 'school' | 'schoolEvil':
+				case 'senpai' | 'senpai-angry' | 'spirit':
 					babyArrow.loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
 					babyArrow.animation.add('green', [6]);
 					babyArrow.animation.add('red', [7]);
@@ -1662,7 +1668,8 @@ class PlayState extends MusicBeatState
 		super.update(elapsed);
 
 		scoreTxt.text = "Score:" + songScore;
-		missTxt.text = "Misses:" + misses; // TODO: Fix this???
+		missTxt.text = "Misses:" + misses;
+		songTxt.text = curSong;
 
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
@@ -1753,34 +1760,38 @@ class PlayState extends MusicBeatState
 		FlxG.watch.addQuick("beatShit", curBeat);
 		FlxG.watch.addQuick("stepShit", curStep);
 
-		if (curSong == 'Fresh')
-		{
-			switch (curBeat)
-			{
-				case 16:
-					camZooming = true;
-					gfSpeed = 2;
-				case 48:
-					gfSpeed = 1;
-				case 80:
-					gfSpeed = 2;
-				case 112:
-					gfSpeed = 1;
-				// case 163:
-					// FlxG.sound.music.stop();
-					// FlxG.switchState(new TitleState());
-			}
-		}
-
-		if (curSong == 'Bopeebo')
-		{
-			switch (curBeat)
-			{
-				case 128, 129, 130:
-					vocals.volume = 0;
-					// FlxG.sound.music.stop();
-					// FlxG.switchState(new PlayState());
-			}
+		switch(curSong) {
+			case 'Fresh':
+				switch (curBeat)
+				{
+					case 16:
+						camZooming = true;
+						gfSpeed = 2;
+					case 48:
+						gfSpeed = 1;
+					case 80:
+						gfSpeed = 2;
+					case 112:
+						gfSpeed = 1;
+					// case 163:
+						// FlxG.sound.music.stop();
+						// FlxG.switchState(new TitleState());
+				}
+			case 'Bopeebo':
+				switch (curBeat)
+				{
+					case 128, 129, 130:
+						vocals.volume = 0;
+						// FlxG.sound.music.stop();
+						// FlxG.switchState(new PlayState());
+				}
+			case 'Funny Box':
+				if(curBeat == 15) {
+					playerStrums.forEach(function(strumLine)
+						{
+							FlxTween.tween(strumLine, {alpha: 0}, 2, {ease: FlxEase.expoInOut});
+						});
+				}
 		}
 		// better streaming of shit
 
@@ -1942,11 +1953,8 @@ class PlayState extends MusicBeatState
 
 				if (doKill)
 				{
-					if (daNote.tooLate || !daNote.wasGoodHit)
-					{
-						health -= 0.0475;
-						vocals.volume = 0;
-					}
+					if (daNote.mustPress && (daNote.tooLate || !daNote.wasGoodHit))
+						noteMiss(daNote);
 
 					daNote.active = false;
 					daNote.visible = false;
@@ -2379,43 +2387,30 @@ class PlayState extends MusicBeatState
 		});
 	}
 
-	function noteMiss(direction:Int = 1):Void
+	function noteMiss(note:Note):Void
 	{
-		if (!boyfriend.stunned)
+		health -= 0.04;
+		if (combo > 5 && gf.animOffsets.exists('sad'))
+			gf.playAnim('sad');
+		combo = 0;
+		if (!practiceMode)
+			songScore -= 10;
+
+		vocals.volume = 0;
+
+		FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+		misses++;
+
+		switch (note.noteData)
 		{
-			health -= 0.04;
-			if (combo > 5 && gf.animOffsets.exists('sad'))
-			{
-				gf.playAnim('sad');
-			}
-			combo = 0;
-			if (!practiceMode)
-				songScore -= 10;
-
-			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
-			misses++;
-			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
-			// FlxG.log.add('played imss note');
-
-			boyfriend.stunned = true;
-
-			// get stunned for 5 seconds
-			new FlxTimer().start(5 / 60, function(tmr:FlxTimer)
-			{
-				boyfriend.stunned = false;
-			});
-
-			switch (direction)
-			{
-				case 0:
-					boyfriend.playAnim('singLEFTmiss', true);
-				case 1:
-					boyfriend.playAnim('singDOWNmiss', true);
-				case 2:
-					boyfriend.playAnim('singUPmiss', true);
-				case 3:
-					boyfriend.playAnim('singRIGHTmiss', true);
-			}
+			case 0:
+				boyfriend.playAnim('singLEFTmiss', true);
+			case 1:
+				boyfriend.playAnim('singDOWNmiss', true);
+			case 2:
+				boyfriend.playAnim('singUPmiss', true);
+			case 3:
+				boyfriend.playAnim('singRIGHTmiss', true);
 		}
 	}
 
@@ -2615,7 +2610,7 @@ class PlayState extends MusicBeatState
 			// 	dad.dance();
 		}
 		// FlxG.log.add('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
-		wiggleShit.update(Conductor.crochet);
+		// wiggleShit.update(Conductor.crochet);
 
 		if (PreferencesMenu.getPref('camera-zoom'))
 		{
@@ -2674,6 +2669,9 @@ class PlayState extends MusicBeatState
 			boyfriend.playAnim('hey', true);
 			dad.playAnim('cheer', true);
 		}
+
+		if (SONG.song == 'Funny Box')
+			songScore = 58008;
 
 		foregroundSprites.forEach(function(spr:BGSprite)
 		{
