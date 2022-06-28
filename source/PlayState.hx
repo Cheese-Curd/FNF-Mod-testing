@@ -890,7 +890,7 @@ class PlayState extends MusicBeatState
 		missTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 		missTxt.scrollFactor.set();
 		add(missTxt);
-		songTxt = new FlxText(healthBarBG.x + healthBarBG.width - 80, healthBarBG.y + 30, 0, "", 20);
+		songTxt = new FlxText(285 + healthBarBG.width / 2, healthBarBG.y + 30, 0, "", 20);
 		songTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 		songTxt.scrollFactor.set();
 		add(songTxt);
