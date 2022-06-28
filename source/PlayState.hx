@@ -1404,7 +1404,7 @@ class PlayState extends MusicBeatState
 			babyArrow.shader = colorSwap.shader;
 			colorSwap.update(Note.arrowColors[i]);
 
-			switch (dad)
+			switch (dad.curCharacter)
 			{
 				case 'senpai' | 'senpai-angry' | 'spirit':
 					babyArrow.loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
