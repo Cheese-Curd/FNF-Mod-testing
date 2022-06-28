@@ -14,6 +14,18 @@ class CoolUtil
 		return difficultyArray[PlayState.storyDifficulty];
 	}
 
+	public static inline function directionString(direction:Int)
+	{
+		switch (direction)
+		{
+			case 0: return 'LEFT';
+			case 1: return 'DOWN';
+			case 2: return 'UP';
+			case 3: return 'RIGHT';
+			default: return 'UNDEFINED';
+		}
+	}
+
 	public static function coolTextFile(path:String):Array<String>
 	{
 		var daList:Array<String> = Assets.getText(path).trim().split('\n');

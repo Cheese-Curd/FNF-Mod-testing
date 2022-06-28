@@ -890,10 +890,11 @@ class PlayState extends MusicBeatState
 		missTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 		missTxt.scrollFactor.set();
 		add(missTxt);
-		songTxt = new FlxText(285 + healthBarBG.width / 2, healthBarBG.y + 30, 0, "", 20);
+		songTxt = new FlxText(0, healthBarBG.y + 30, 0, curSong, 20);
 		songTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 		songTxt.scrollFactor.set();
 		add(songTxt);
+		songTxt.x = healthBarBG.x + healthBarBG.width / 2 - songTxt.width / 2;
 
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -1416,26 +1417,24 @@ class PlayState extends MusicBeatState
 					babyArrow.setGraphicSize(Std.int(babyArrow.width * daPixelZoom));
 					babyArrow.updateHitbox();
 					babyArrow.antialiasing = false;
+					
+					babyArrow.x += Note.swagWidth * i;
 
 					switch (Math.abs(i))
 					{
 						case 0:
-							babyArrow.x += Note.swagWidth * 0;
 							babyArrow.animation.add('static', [0]);
 							babyArrow.animation.add('pressed', [4, 8], 12, false);
 							babyArrow.animation.add('confirm', [12, 16], 24, false);
 						case 1:
-							babyArrow.x += Note.swagWidth * 1;
 							babyArrow.animation.add('static', [1]);
 							babyArrow.animation.add('pressed', [5, 9], 12, false);
 							babyArrow.animation.add('confirm', [13, 17], 24, false);
 						case 2:
-							babyArrow.x += Note.swagWidth * 2;
 							babyArrow.animation.add('static', [2]);
 							babyArrow.animation.add('pressed', [6, 10], 12, false);
 							babyArrow.animation.add('confirm', [14, 18], 12, false);
 						case 3:
-							babyArrow.x += Note.swagWidth * 3;
 							babyArrow.animation.add('static', [3]);
 							babyArrow.animation.add('pressed', [7, 11], 12, false);
 							babyArrow.animation.add('confirm', [15, 19], 24, false);
@@ -1451,25 +1450,23 @@ class PlayState extends MusicBeatState
 					babyArrow.antialiasing = true;
 					babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
 
+					babyArrow.x += Note.swagWidth * i;
+
 					switch (Math.abs(i))
 					{
 						case 0:
-							babyArrow.x += Note.swagWidth * 0;
 							babyArrow.animation.addByPrefix('static', 'arrow static instance 1');
 							babyArrow.animation.addByPrefix('pressed', 'left press', 24, false);
 							babyArrow.animation.addByPrefix('confirm', 'left confirm', 24, false);
 						case 1:
-							babyArrow.x += Note.swagWidth * 1;
 							babyArrow.animation.addByPrefix('static', 'arrow static instance 2');
 							babyArrow.animation.addByPrefix('pressed', 'down press', 24, false);
 							babyArrow.animation.addByPrefix('confirm', 'down confirm', 24, false);
 						case 2:
-							babyArrow.x += Note.swagWidth * 2;
 							babyArrow.animation.addByPrefix('static', 'arrow static instance 4');
 							babyArrow.animation.addByPrefix('pressed', 'up press', 24, false);
 							babyArrow.animation.addByPrefix('confirm', 'up confirm', 24, false);
 						case 3:
-							babyArrow.x += Note.swagWidth * 3;
 							babyArrow.animation.addByPrefix('static', 'arrow static instance 3');
 							babyArrow.animation.addByPrefix('pressed', 'right press', 24, false);
 							babyArrow.animation.addByPrefix('confirm', 'right confirm', 24, false);
@@ -1669,7 +1666,7 @@ class PlayState extends MusicBeatState
 
 		scoreTxt.text = "Score:" + songScore;
 		missTxt.text = "Misses:" + misses;
-		songTxt.text = curSong;
+		
 
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
@@ -1954,7 +1951,7 @@ class PlayState extends MusicBeatState
 				if (doKill)
 				{
 					if (daNote.mustPress && (daNote.tooLate || !daNote.wasGoodHit))
-						noteMiss(daNote);
+						noteMiss(daNote.noteData);
 
 					daNote.active = false;
 					daNote.visible = false;
@@ -2356,6 +2353,11 @@ class PlayState extends MusicBeatState
 			}
 			else if (possibleNotes.length > 0)
 			{
+				if (!PreferencesMenu.getPref('ghost-tap')) {
+					for (i in 0...controlArray.length)
+						if (controlArray[i] && !ignoreList.contains(i))
+							noteMiss(i);
+				}
 				for (possibleNote in possibleNotes)
 				{
 					if (controlArray[possibleNote.noteData])
@@ -2364,7 +2366,13 @@ class PlayState extends MusicBeatState
 					}
 				}
 			}
+			else if (!PreferencesMenu.getPref('ghost-tap'))
+				for (i in 0...controlArray.length)
+					if (controlArray[i])
+						noteMiss(i);
 		}
+
+
 		if (boyfriend.holdTimer > 0.004 * Conductor.stepCrochet && !holdingArray.contains(true) && boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
 		{
 			boyfriend.playAnim('idle');
@@ -2387,7 +2395,7 @@ class PlayState extends MusicBeatState
 		});
 	}
 
-	function noteMiss(note:Note):Void
+	function noteMiss(direction:Int):Void
 	{
 		health -= 0.04;
 		if (combo > 5 && gf.animOffsets.exists('sad'))
@@ -2401,17 +2409,7 @@ class PlayState extends MusicBeatState
 		FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 		misses++;
 
-		switch (note.noteData)
-		{
-			case 0:
-				boyfriend.playAnim('singLEFTmiss', true);
-			case 1:
-				boyfriend.playAnim('singDOWNmiss', true);
-			case 2:
-				boyfriend.playAnim('singUPmiss', true);
-			case 3:
-				boyfriend.playAnim('singRIGHTmiss', true);
-		}
+		boyfriend.playAnim('sing${CoolUtil.directionString(direction)}miss', true);
 	}
 
 	function goodNoteHit(note:Note):Void
