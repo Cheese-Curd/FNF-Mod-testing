@@ -29,12 +29,6 @@ class MainMenuState extends MusicBeatState
 {
 	var menuItems:MainMenuList;
 
-	#if !switch
-	var optionShit:Array<String> = ['story mode', 'freeplay', 'donate', 'options'];
-	#else
-	var optionShit:Array<String> = ['story mode', 'freeplay'];
-	#end
-
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
 
@@ -128,7 +122,17 @@ class MainMenuState extends MusicBeatState
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 
-		final funkyText:Array<String> = "Not M.I.L.F again...;Still in Development;Cheesy!;Based off the Newgrounds Port!;NOT Psych Engine;R.I.P Kade Engine;Never forget tankdude;Also play TF2!;Vowortuwux Powolygowonowol UwU".split(';');
+		final funkyText:Array<String> = [
+			"Not M.I.L.F again...",
+			"Still in Development",
+			"Cheesy!",
+			"Based off the Newgrounds Port!",
+			"NOT Psych Engine",
+			"R.I.P Kade Engine",
+			"Never forget tankdude",
+			"Also play TF2!",
+			"Vowortuwux Powolygowonowol UwU"
+		];
 		versionShit.text += ' [${funkyText[FlxG.random.int(0, funkyText.length-1)]}]';
 
 		super.create();

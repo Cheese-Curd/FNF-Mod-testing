@@ -499,6 +499,65 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 				flipX = true;
+			// VS. Kapi mod :) [https://github.com/ImToastys/VS-KAPI-Fuzzy-Distortion-Code/blob/master/source/Character.hx]
+			case 'kapi':
+				tex = Paths.getSparrowAtlas('characters/KAPI');
+				frames = tex;
+				animation.addByIndices('idle', 'Dad idle dance', [2, 4, 6, 8, 10, 0], "", 12, false);
+				animation.addByPrefix('singUP', 'Dad Sing Note UP', 24);
+				animation.addByPrefix('singRIGHT', 'Dad Sing Note RIGHT', 24);
+				animation.addByPrefix('singDOWN', 'Dad Sing Note DOWN', 24);
+				animation.addByPrefix('singLEFT', 'Dad Sing Note LEFT', 24);
+				animation.addByPrefix('meow', 'Dad meow', 24, false);
+				animation.addByPrefix('stare', 'Dad stare', 24, false);
+				
+				addOffset('idle');
+				
+				addOffset("singUP", -6, 50);
+				addOffset("singRIGHT", 0, 27);
+				addOffset("singLEFT", -10, 10);
+				addOffset("singDOWN", 0, -30);
+
+				addOffset("stare");
+				addOffset("meow");
+				playAnim('idle');
+			case 'kapi-angry':
+				tex = Paths.getSparrowAtlas('characters/KAPI_ANGRY');
+				frames = tex;
+				animation.addByIndices('idle', 'Dad idle dance', [2, 4, 6, 8, 10, 0], "", 12, false);
+				animation.addByPrefix('singUP', 'Dad Sing Note UP', 24);
+				animation.addByPrefix('singRIGHT', 'Dad Sing Note RIGHT', 24);
+				animation.addByPrefix('singDOWN', 'Dad Sing Note DOWN', 24);
+				animation.addByPrefix('singLEFT', 'Dad Sing Note LEFT', 24);
+				animation.addByPrefix('meow', 'Dad meow', 24, false);
+
+				
+				addOffset('idle');
+				
+				addOffset("singUP", -6, 50);
+				addOffset("singRIGHT", 0, 27);
+				addOffset("singLEFT", -10, 10);
+				addOffset("singDOWN", 0, -30);
+
+				addOffset("meow");
+				playAnim('idle');
+			case 'g&w':
+				tex = Paths.getSparrowAtlas('characters/g&w');
+				frames = tex;
+				animation.addByPrefix('singUP', 'spooky UP NOTE', 24, false);
+				animation.addByPrefix('singDOWN', 'spooky DOWN note', 24, false);
+				animation.addByPrefix('singLEFT', 'note sing left', 24, false);
+				animation.addByPrefix('singRIGHT', 'spooky sing right', 24, false);
+				animation.addByIndices('danceRight', 'spooky dance idle', [8, 10, 12, 14], "", 12, false);
+
+				addOffset('danceRight');
+
+				addOffset("singUP", 0, 0);
+				addOffset("singRIGHT", 0, 0);
+				addOffset("singLEFT", 0, 0);
+				addOffset("singDOWN", 0, 0);
+
+				playAnim('danceRight');
 		}
 
 		dance();
@@ -564,6 +623,7 @@ class Character extends FlxSprite
 
 	override function update(elapsed:Float)
 	{
+		if (animation.curAnim == null) return;
 		if (!curCharacter.startsWith('bf'))
 		{
 			if (animation.curAnim.name.startsWith('sing'))
@@ -648,6 +708,8 @@ class Character extends FlxSprite
 				case 'tankman':
 					if (!animation.curAnim.name.endsWith('DOWN-alt'))
 						playAnim('idle');
+				case 'g&w':
+					playAnim('danceRight');
 				default:
 					playAnim('idle');
 			}

@@ -31,7 +31,7 @@ class FreeplayState extends MusicBeatState
 	var intendedScore:Int = 0;
 
 	private var grpSongs:FlxTypedGroup<Alphabet>;
-	private var coolColors = [0xFF9271FD, 0xFF9271FD, 0xFF223344, 0xFF941653, 0xFFFC96D7, 0xFFA0D1FF, 0xFFFF78BF, 0xFFF6B604];
+	private var coolColors = [0xFF9271FD, 0xFF9271FD, 0xFF223344, 0xFF941653, 0xFFFC96D7, 0xFFA0D1FF, 0xFFFF78BF, 0xFFF6B604, -1, 0xFF9271FD];
 
 	private var curPlaying:Bool = false;
 
@@ -86,6 +86,8 @@ class FreeplayState extends MusicBeatState
 			addWeek(['Ugh', 'Guns', 'Stress'], 7, ['tankman']);
 		if (StoryMenuState.weekUnlocked[7])
 			addWeek(['funny-box'], 8, ['box']);
+		if (StoryMenuState.weekUnlocked[8])
+			addWeek(['wocky', 'beathoven', 'hairball', 'nyaw'], 9, ['kapi', 'kapi', 'kapi-angry', 'kapi']);
 
 		// LOAD MUSIC
 
@@ -93,7 +95,7 @@ class FreeplayState extends MusicBeatState
 
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		add(bg);
-
+ 
 		grpSongs = new FlxTypedGroup<Alphabet>();
 		add(grpSongs);
 

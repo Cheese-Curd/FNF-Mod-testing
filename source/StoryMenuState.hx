@@ -31,11 +31,13 @@ class StoryMenuState extends MusicBeatState
 		['Cocoa', 'Eggnog', 'Winter-Horrorland'],
 		['Senpai', 'Roses', 'Thorns'],
 		['Ugh', 'Guns', 'Stress'],
-		['funny-box']
+		['funny-box'],
+		['wocky', 'beathoven', 'hairball', 'nyaw'],
+		['flatzone']
 	];
 	var curDifficulty:Int = 1;
 
-	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true, true, true];
+	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true, true, true, true, true];
 
 	var weekCharacters:Array<Dynamic> = [
 		['dad', 'bf', 'gf'],
@@ -46,12 +48,25 @@ class StoryMenuState extends MusicBeatState
 		['parents-christmas', 'bf', 'gf'],
 		['senpai', 'bf', 'gf'],
 		['tankman', 'bf', 'gf'],
+		['dad', 'bf', 'gf'],
+		['dad', 'bf', 'gf'],
 		['dad', 'bf', 'gf']
 	];
 
-	var weekNames:Array<String> = "Learn The Basics!;Daddy Dearest;Spooky Month;PICO;MOMMY MUST MURDER;RED SNOW;hating simulator ft. moawling;TANKMAN;Good 'Ol Classic".split(";");
-
-	var txtWeekTitle:FlxText;
+	var weekNames:Array<String> = [
+		"Learn The Basics!",
+		"Daddy Dearest",
+		"Spooky Month",
+		"PICO",
+		"MOMMY MUST MURDER",
+		"RED SNOW",
+		"hating simulator ft. moawling",
+		"TANKMAN",
+		"Good 'Ol Classic",
+		"B-B-Break Down!",
+		"Please nerf Up-B..."
+	];
+   	var txtWeekTitle:FlxText;
 
 	var curWeek:Int = 0;
 
@@ -107,7 +122,7 @@ class StoryMenuState extends MusicBeatState
 		grpLocks = new FlxTypedGroup<FlxSprite>();
 		add(grpLocks);
 
-		trace("Line 70 (actually 110 :wink:)");
+		trace("Line 70 (actually 114 :wink:)");
 		
 		#if desktop
 		// Updating Discord Rich Presence

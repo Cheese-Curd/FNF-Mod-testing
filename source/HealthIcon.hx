@@ -40,7 +40,7 @@ class HealthIcon extends FlxSprite
 
 	public function changeIcon(char:String)
 	{
-		if (char != 'bf-pixel' && char != 'bf-old')
+		if (char != 'bf-pixel' && char != 'bf-old' && char != 'kapi-angry')
 			char = char.split('-')[0].trim();
 
 		if (char != this.char)

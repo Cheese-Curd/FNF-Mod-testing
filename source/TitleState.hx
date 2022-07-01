@@ -154,8 +154,6 @@ class TitleState extends MusicBeatState
 	#end
 
 	var logoBl:FlxSprite;
-	var gfDance:FlxSprite;
-	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
 
 	function startIntro()
@@ -190,8 +188,8 @@ class TitleState extends MusicBeatState
 		Conductor.changeBPM(116.5); // fresh chill mix is around this bpm -Angel
 		persistentUpdate = true;
 
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		// bg.antialiasing = true;
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('titleScreen'), false, FlxG.width, FlxG.height);
+		bg.antialiasing = true;
 		// bg.setGraphicSize(Std.int(bg.width * 0.6));
 		// bg.updateHitbox();
 		add(bg);
@@ -202,17 +200,8 @@ class TitleState extends MusicBeatState
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
-		// logoBl.screenCenter();
+		logoBl.screenCenter(X);
 		// logoBl.color = FlxColor.BLACK;
-		logoBl.shader = swagShader.shader;
-
-		gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
-		gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
-		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-		gfDance.antialiasing = true;
-		add(gfDance);
-		gfDance.shader = swagShader.shader;
 		add(logoBl);
 
 		titleText = new FlxSprite(100, FlxG.height * 0.8);
@@ -222,6 +211,7 @@ class TitleState extends MusicBeatState
 		titleText.antialiasing = true;
 		titleText.animation.play('idle');
 		titleText.updateHitbox();
+		titleText.shader = swagShader.shader;
 		// titleText.screenCenter(X);
 		add(titleText);
 
@@ -378,14 +368,7 @@ class TitleState extends MusicBeatState
 			skipIntro();
 		}
 
-		if (controls.UI_LEFT)
-		{
-			swagShader.update(elapsed * 0.1);
-		}
-		if (controls.UI_RIGHT)
-		{
-			swagShader.update(-elapsed * 0.1);
-		}
+		swagShader.update(elapsed * 0.1);
 
 		super.update(elapsed);
 	}
@@ -425,12 +408,6 @@ class TitleState extends MusicBeatState
 		super.beatHit();
 
 		logoBl.animation.play('bump');
-		danceLeft = !danceLeft;
-
-		if (danceLeft)
-			gfDance.animation.play('danceRight');
-		else
-			gfDance.animation.play('danceLeft');
 
 		FlxG.log.add(curBeat);
 
@@ -441,51 +418,36 @@ class TitleState extends MusicBeatState
 				switch (i + 1)
 				{
 					case 1:
-						createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
-					// credTextShit.visible = true;
+						createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er', 'and Eliana']);
 					case 3:
 						addMoreText('present');
-					// credTextShit.text += '\npresent...';
-					// credTextShit.addText();
 					case 4:
 						deleteCoolText();
-					// credTextShit.visible = false;
-					// credTextShit.text = 'In association \nwith';
-					// credTextShit.screenCenter();
 					case 5:
-						createCoolText(['In association', 'with']);
+						createCoolText(['TOTALLY NOT In association', 'with']);
 					case 7:
 						addMoreText('newgrounds');
 						ngSpr.visible = true;
-					// credTextShit.text += '\nNewgrounds';
 					case 8:
 						deleteCoolText();
 						ngSpr.visible = false;
-					// credTextShit.visible = false;
-		
-					// credTextShit.text = 'Shoutouts Tom Fulp';
-					// credTextShit.screenCenter();
 					case 9:
 						createCoolText([curWacky[0]]);
-					// credTextShit.visible = true;
 					case 11:
 						addMoreText(curWacky[1]);
-					// credTextShit.text += '\nlmao';
 					case 12:
 						deleteCoolText();
-					// credTextShit.visible = false;
-					// credTextShit.text = "Friday";
-					// credTextShit.screenCenter();
 					case 13:
 						addMoreText('Friday');
-					// credTextShit.visible = true;
 					case 14:
 						addMoreText('Night');
-					// credTextShit.text += '\nNight';
 					case 15:
-						addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
-		
+						addMoreText('Funkin');
 					case 16:
+						addMoreText('Cheese');
+					case 17:
+						addMoreText('Edition');
+					case 18:
 						skipIntro();
 				}
 			}
